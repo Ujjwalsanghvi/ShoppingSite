@@ -4,10 +4,6 @@ import {
   loadOrders, 
   loadAddresses, 
   loadWalletData,
-  selectOrders,
-  selectAddresses,
-  selectTransactions,
-  selectWalletBalance,
   selectProfileLoading
 } from '../../store/slices/profileSlice';
 import { ProfileSidebar } from '../../components/Profile/ProfileSidebar';
@@ -20,6 +16,7 @@ import { SignOutButton } from '../../components/Profile/SignOutButton';
 export const ViewProfile: React.FC = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectProfileLoading);
+  
   
   // Load all profile data when component mounts
   useEffect(() => {

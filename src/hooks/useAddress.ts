@@ -1,40 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '../store/hooks';
 import { IAddress } from '../types/Address';
 import { getDemoAddresses } from '../data/demoAddresses';
-import { 
-  getInitialAddressForm, 
-  getAddressFormFromAddress, 
-  getAddressFormWithName 
+import {
+  getInitialAddressForm,
+  getAddressFormFromAddress,
+  getAddressFormWithName,
 } from '../data/addressFormData';
 
 export const useAddress = () => {
-  // Get user from Redux instead of AuthContext
   const { user } = useAppSelector((state) => state.auth);
-  
+
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState<IAddress | null>(null);
   const [formData, setFormData] = useState(getInitialAddressForm());
 
-  useEffect(() => {
-    loadAddresses();
-  }, [user?.id]);
-
-  const loadAddresses = () => {
+  const loadAddresses = useCallback(() => {
     const savedAddresses = localStorage.getItem(`addresses_${user?.id}`);
+
     if (savedAddresses) {
       setAddresses(JSON.parse(savedAddresses));
     } else {
       const demoAddresses = getDemoAddresses(user);
       setAddresses(demoAddresses);
-      localStorage.setItem(`addresses_${user?.id}`, JSON.stringify(demoAddresses));
+      localStorage.setItem(
+        `addresses_${user?.id}`,
+        JSON.stringify(demoAddresses)
+      );
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadAddresses();
+  }, [loadAddresses]);
 
   const saveAddresses = (newAddresses: IAddress[]) => {
     setAddresses(newAddresses);
-    localStorage.setItem(`addresses_${user?.id}`, JSON.stringify(newAddresses));
+    localStorage.setItem(
+      `addresses_${user?.id}`,
+      JSON.stringify(newAddresses)
+    );
   };
 
   const resetForm = () => {
@@ -43,21 +49,25 @@ export const useAddress = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (editingAddress) {
-      const updatedAddresses = addresses.map(addr =>
+      const updatedAddresses = addresses.map((addr) =>
         addr.id === editingAddress.id
           ? { ...formData, id: addr.id, isDefault: addr.isDefault }
           : addr
       );
+
       saveAddresses(updatedAddresses);
     } else {
       const newAddress: IAddress = {
         id: Date.now(),
         ...formData,
-        isDefault: addresses.length === 0
+        isDefault: addresses.length === 0,
       };
+
       saveAddresses([...addresses, newAddress]);
     }
+
     setShowForm(false);
     setEditingAddress(null);
     resetForm();
@@ -71,16 +81,17 @@ export const useAddress = () => {
 
   const handleDelete = (id: number) => {
     if (window.confirm('Are you sure you want to delete this address?')) {
-      const updatedAddresses = addresses.filter(addr => addr.id !== id);
+      const updatedAddresses = addresses.filter((addr) => addr.id !== id);
       saveAddresses(updatedAddresses);
     }
   };
 
   const setDefaultAddress = (id: number) => {
-    const updatedAddresses = addresses.map(addr => ({
+    const updatedAddresses = addresses.map((addr) => ({
       ...addr,
-      isDefault: addr.id === id
+      isDefault: addr.id === id,
     }));
+
     saveAddresses(updatedAddresses);
   };
 
@@ -97,7 +108,10 @@ export const useAddress = () => {
   };
 
   const handleFormChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData({
+      ...formData,
+      [field]: value,
+    });
   };
 
   return {
@@ -111,6 +125,6 @@ export const useAddress = () => {
     setDefaultAddress,
     openAddForm,
     closeForm,
-    handleFormChange
+    handleFormChange,
   };
 };

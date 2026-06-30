@@ -12,7 +12,7 @@ import { useToast } from '../hooks/useToast'; // Add this import
 export const Wishlist: React.FC = () => {
   const dispatch = useAppDispatch();
   const wishlist = useAppSelector(selectWishlistItems);
-  const { showSuccess, showWarning, showError } = useToast(); // Add this line
+  const { showSuccess, showWarning } = useToast(); // Add this line
 
   const handleMoveToCart = (product: any) => {
     dispatch(addToCart({ product, quantity: 1 }));

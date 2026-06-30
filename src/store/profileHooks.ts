@@ -12,7 +12,6 @@ import {
   selectProfileError,
   openEditModal,
   closeEditModal,
-  setEditData,
   handleInputChange,
   handleSaveChanges,
   handleEditClick,

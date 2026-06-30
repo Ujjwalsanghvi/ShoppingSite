@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { Product } from '../types/Mainview';
@@ -28,14 +28,60 @@ export const ProductList: React.FC = () => {
     return wishlistItems.some(item => item.id === productId);
   };
 
+  const fetchProducts = useCallback(async () => {
+    try {
+      const data = await api.getProducts();
+      setProducts(data);
+      setFilteredProducts(data);
+      const initialQuantities: { [key: number]: number } = {};
+      data.forEach(product => {
+        initialQuantities[product.id] = 1;
+      });
+      setQuantities(initialQuantities);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const data = await api.getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  }, []);
+
+  const filterProducts = useCallback(() => {
+    let filtered = [...products];
+
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.title
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
+
+    setFilteredProducts(filtered);
+  }, [products, searchTerm, selectedCategory]);
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-  }, []);
+  }, [fetchProducts, fetchCategories]);
 
   useEffect(() => {
     filterProducts();
-  }, [searchTerm, selectedCategory, products]);
+  }, [filterProducts]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,52 +102,6 @@ export const ProductList: React.FC = () => {
       );
     };
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const data = await api.getProducts();
-      setProducts(data);
-      setFilteredProducts(data);
-      const initialQuantities: { [key: number]: number } = {};
-      data.forEach(product => {
-        initialQuantities[product.id] = 1;
-      });
-      setQuantities(initialQuantities);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const data = await api.getCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  const filterProducts = () => {
-    let filtered = [...products];
-
-    if (searchTerm) {
-      filtered = filtered.filter((product) =>
-        product.title
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    setFilteredProducts(filtered);
-  };
 
   const handleAddToCart = (product: Product, quantity: number) => {
     dispatch(addToCart({ product, quantity }));

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '../../store/hooks';
 
 interface Order {
@@ -27,11 +27,7 @@ export const OrderManagement: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const loadOrders = () => {
+  const loadOrders = useCallback(() => {
     const savedOrders = localStorage.getItem(`orders_${user?.id}`);
     if (savedOrders) {
       setOrders(JSON.parse(savedOrders));
@@ -83,7 +79,11 @@ export const OrderManagement: React.FC = () => {
       setOrders(demoOrders);
       localStorage.setItem(`orders_${user?.id}`, JSON.stringify(demoOrders));
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
 
   const updateOrderStatus = (orderId: string, newStatus: Order['status']) => {
     const updatedOrders = orders.map(order => {

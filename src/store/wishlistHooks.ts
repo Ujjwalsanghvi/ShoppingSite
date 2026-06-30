@@ -6,7 +6,6 @@ import {
   clearWishlist as clearWishlistAction,
   selectWishlistItems,
   selectWishlistCount,
-  selectIsInWishlist,
 } from './slices/wishlistSlice';
 import { Product } from '../types/Mainview';
 
@@ -28,9 +27,8 @@ export const useWishlist = () => {
   }, [dispatch]);
 
   const isInWishlist = useCallback((productId: number) => {
-    const selector = selectIsInWishlist(productId);
-    return useAppSelector(selector);
-  }, []);
+    return wishlist.some((item) => item.id === productId);
+  }, [wishlist]);
 
   const getWishlistCount = useCallback(() => {
     return count;

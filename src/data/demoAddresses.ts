@@ -1,4 +1,3 @@
-import { IAddress } from "../types/Address";
 import { User } from "../types/Mainview";
 
 export const getDemoAddresses = (user: User | null) => {

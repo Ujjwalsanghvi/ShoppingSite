@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { Product } from '../types/Mainview';
@@ -22,13 +22,7 @@ export const ProductDetail: React.FC = () => {
     product ? selectIsInWishlist(product.id)(state) : false
   );
 
-  useEffect(() => {
-    if (id) {
-      fetchProduct();
-    }
-  }, [id]);
-
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     try {
       const data = await api.getProduct(Number(id));
       setProduct(data);
@@ -37,7 +31,13 @@ export const ProductDetail: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct();
+    }
+  }, [id, fetchProduct]);
 
   const handleAddToCart = () => {
     if (product) {

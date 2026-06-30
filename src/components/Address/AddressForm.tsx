@@ -1,5 +1,4 @@
 import React from 'react';
-import { IAddress } from '../../types/Address';
 import { AddressFormProps } from '../../types/AddressFormProps';
 
 
