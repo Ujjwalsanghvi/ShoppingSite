@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '../../store/hooks';
 
 interface Transaction {
@@ -17,11 +17,7 @@ export const Wallet: React.FC = () => {
   const [showAddMoney, setShowAddMoney] = useState(false);
   const [amount, setAmount] = useState('');
 
-  useEffect(() => {
-    loadWalletData();
-  }, []);
-
-  const loadWalletData = () => {
+  const loadWalletData = useCallback(() => {
     const savedBalance = localStorage.getItem(`wallet_balance_${user?.id}`);
     const savedTransactions = localStorage.getItem(`wallet_transactions_${user?.id}`);
     
@@ -56,7 +52,11 @@ export const Wallet: React.FC = () => {
       setTransactions(demoTransactions);
       localStorage.setItem(`wallet_transactions_${user?.id}`, JSON.stringify(demoTransactions));
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadWalletData();
+  }, [loadWalletData]);
 
   const saveWalletData = (newBalance: number, newTransactions: Transaction[]) => {
     setBalance(newBalance);

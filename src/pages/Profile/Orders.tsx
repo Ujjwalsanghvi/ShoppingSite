@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
 
@@ -26,11 +26,7 @@ export const Orders: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [orders, setOrders] = useState<Order[]>([]);
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const loadOrders = () => {
+  const loadOrders = useCallback(() => {
     const savedOrders = localStorage.getItem(`orders_${user?.id}`);
     if (savedOrders) {
       setOrders(JSON.parse(savedOrders));
@@ -89,7 +85,11 @@ export const Orders: React.FC = () => {
       setOrders(demoOrders);
       localStorage.setItem(`orders_${user?.id}`, JSON.stringify(demoOrders));
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
 
   const getStatusColor = (status: string) => {
     switch(status) {

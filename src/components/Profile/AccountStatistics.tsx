@@ -7,34 +7,9 @@ import {
   selectTransactions, 
   selectWalletBalance 
 } from '../../store/slices/profileSlice';
-import { Order } from '../../types/Order';
-import { IAddress } from '../../types/Address';
-import { Transaction } from '../../types/Transaction';
 import { OrderBarChart } from '../Charts/OrderBarChart';
 import { OrderStatusPieChart } from '../Charts/OrderStatusPieChart';
 import { SpendingBarChart } from '../Charts/SpendingBarChart';
-
-interface StatCardProps {
-  icon: string;
-  label: string;
-  value: string | number;
-  isOpen: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}
-
-interface OrderCardProps {
-  order: Order;
-  getStatusColor: (status: string) => string;
-}
-
-interface AddressCardProps {
-  address: IAddress;
-}
-
-interface TransactionCardProps {
-  transaction: Transaction;
-}
 
 export const AccountStatistics: React.FC = () => {
   const orders = useAppSelector(selectOrders);
@@ -290,89 +265,3 @@ export const AccountStatistics: React.FC = () => {
     </div>
   );
 };
-
-// Helper Components remain the same...
-const StatCard: React.FC<StatCardProps> = ({ icon, label, value, isOpen, onToggle, children }) => (
-  <>
-    <div
-      className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer transition-all duration-300 hover:bg-blue-50 hover:translate-x-1"
-      onClick={onToggle}
-    >
-      <span className="text-2xl md:text-3xl w-9 md:w-11">{icon}</span>
-      <span className="flex-1 text-sm text-gray-500 font-medium">{label}</span>
-      <span className="text-xl font-bold text-blue-400">{value}</span>
-      <span className="text-xs text-gray-400">{isOpen ? '▲' : '▼'}</span>
-    </div>
-    {isOpen && <div className="mt-4 p-5 bg-white rounded-xl border border-gray-200">{children}</div>}
-  </>
-);
-
-const OrderCard: React.FC<OrderCardProps> = ({ order, getStatusColor }) => (
-  <div className="p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50">
-    <div className="flex justify-between mb-2">
-      <span className="font-bold text-sm">Order #{order.id}</span>
-      <span
-        className="px-2 py-1 rounded text-white text-[11px] font-bold"
-        style={{ backgroundColor: getStatusColor(order.status) }}
-      >
-        {order.status}
-      </span>
-    </div>
-    <div className="text-xs text-gray-500 mb-2">Placed on: {new Date(order.date).toLocaleDateString()}</div>
-    {order.items.map((item) => (
-      <div
-        key={item.id}
-        className="flex flex-col md:flex-row gap-4 p-2 my-2 bg-white rounded-lg text-center md:text-left"
-      >
-        <img src={item.image} alt={item.title} className="w-12 h-12 object-contain mx-auto md:mx-0" />
-        <div className="flex-1 text-xs">
-          <div className="font-medium mb-1">{item.title.substring(0, 50)}</div>
-          <div>Quantity: {item.quantity}</div>
-          <div>Price: ${item.price.toFixed(2)}</div>
-        </div>
-        <div className="font-bold text-blue-400">${(item.price * item.quantity).toFixed(2)}</div>
-      </div>
-    ))}
-    <div className="text-right font-bold mt-2 pt-2 border-t border-gray-200">Total: ${order.total.toFixed(2)}</div>
-  </div>
-);
-
-const AddressCard: React.FC<AddressCardProps> = ({ address }) => (
-  <div className="p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50 relative">
-    {address.isDefault && (
-      <span className="absolute top-2 right-2 bg-green-500 text-white px-2 py-0.5 rounded text-[10px]">Default</span>
-    )}
-    <p>
-      <strong>{address.fullName}</strong>
-    </p>
-    <p>{address.street}</p>
-    <p>
-      {address.city}, {address.state} {address.zipCode}
-    </p>
-    <p>{address.country}</p>
-    <p>📞 {address.phone}</p>
-  </div>
-);
-
-const TransactionCard: React.FC<TransactionCardProps> = ({ transaction }) => (
-  <div className="p-3 mb-2 border border-gray-200 rounded-lg bg-gray-50">
-    <div className="flex justify-between mb-2">
-      <div>
-        <div className="text-sm font-medium">{transaction.description}</div>
-        <div className="text-xs text-gray-500">{transaction.date}</div>
-      </div>
-      <div className={`text-base font-bold ${transaction.type === 'credit' ? 'text-green-500' : 'text-red-500'}`}>
-        {transaction.type === 'credit' ? '+' : '-'}${transaction.amount.toFixed(2)}
-      </div>
-    </div>
-    <div className="text-right">
-      <span
-        className={`inline-block px-2 py-0.5 rounded text-white text-[10px] ${
-          transaction.status === 'completed' ? 'bg-green-500' : 'bg-orange-500'
-        }`}
-      >
-        {transaction.status}
-      </span>
-    </div>
-  </div>
-);
