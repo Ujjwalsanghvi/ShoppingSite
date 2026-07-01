@@ -17,6 +17,7 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -38,7 +39,12 @@ export const Navbar: React.FC = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        mobileMenuButtonRef.current &&
+        !mobileMenuButtonRef.current.contains(event.target as Node)
+      ) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -59,7 +65,9 @@ export const Navbar: React.FC = () => {
         </Link>
         
         <button 
+          ref={mobileMenuButtonRef}
           className="hidden max-[768px]:block bg-none border-none text-white text-2xl cursor-pointer p-2"
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={toggleMobileMenu}
         >
           <span className="text-2xl">{isMobileMenuOpen ? '✕' : '☰'}</span>
@@ -75,18 +83,17 @@ export const Navbar: React.FC = () => {
             ❤️ Wishlist ({wishlistCount})
           </Link>
 
-          {/* Analytics Link - Desktop */}
-          <Link to="/analytics" className="text-white no-underline px-3 py-2 rounded-md transition-colors duration-300 text-sm font-medium hover:bg-white/10">
-            📊 Analytics
-          </Link>
-
-          {/* Admin Link - Desktop */}
-          <Link to="/admin/orders" className="text-white no-underline px-3 py-2 rounded-md transition-colors duration-300 text-sm font-medium hover:bg-white/10">
-            📋 Admin
-          </Link>
-          
           {isAuthenticated ? (
             <>
+              {/* Analytics & Admin - only when logged in */}
+              <Link to="/analytics" className="text-white no-underline px-3 py-2 rounded-md transition-colors duration-300 text-sm font-medium hover:bg-white/10">
+                📊 Analytics
+              </Link>
+
+              <Link to="/admin/orders" className="text-white no-underline px-3 py-2 rounded-md transition-colors duration-300 text-sm font-medium hover:bg-white/10">
+                📋 Admin
+              </Link>
+
               <Link to="/cart" className="text-white no-underline px-3 py-2 rounded-md transition-colors duration-300 text-sm font-medium hover:bg-white/10">
                 Cart ({cartCount})
               </Link>
@@ -170,18 +177,17 @@ export const Navbar: React.FC = () => {
               ❤️ Wishlist ({wishlistCount})
             </Link>
 
-            {/* Analytics Link - Mobile */}
-            <Link to="/analytics" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
-              📊 Analytics
-            </Link>
-
-            {/* Admin Link - Mobile */}
-            <Link to="/admin/orders" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
-              📋 Admin
-            </Link>
-            
             {isAuthenticated ? (
               <>
+                {/* Analytics & Admin - only when logged in */}
+                <Link to="/analytics" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                  📊 Analytics
+                </Link>
+
+                <Link to="/admin/orders" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                  📋 Admin
+                </Link>
+
                 <Link to="/cart" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
                   Cart ({cartCount})
                 </Link>
@@ -194,7 +200,7 @@ export const Navbar: React.FC = () => {
                 <Link to="/profile/wallet" className="text-white no-underline py-2.5 text-base text-center bg-white/10 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
                   My Wallet
                 </Link>
-                <Link to="/profile/view" className=" no-underline py-2.5 text-base text-center bg-blue-400/20 border border-blue-400/30 text-[#4fc3f7] rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link to="/profile/view" className="no-underline py-2.5 text-base text-center bg-blue-400/20 border border-blue-400/30 text-[#4fc3f7] rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
                   👤 View Profile
                 </Link>
                 <button onClick={handleLogout} className="bg-red-500/20 text-red-500 border-none py-2.5 rounded-lg text-base cursor-pointer text-center">
