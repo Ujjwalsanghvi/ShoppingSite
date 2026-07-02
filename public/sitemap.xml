@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+
+  <!-- Products Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/products</loc>
+    <priority>0.9</priority>
+    <changefreq>daily</changefreq>
+  </url>
+
+  <!-- Wishlist Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/wishlist</loc>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Cart Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/cart</loc>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Login Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/login</loc>
+    <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Signup Page -->
+  <url>
+    <loc>https://shopping-site-ne7g.vercel.app/signup</loc>
+    <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+</urlset>

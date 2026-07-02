@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { api } from '../services/api';
 import { Product } from '../types/Mainview';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -106,7 +107,6 @@ export const ProductList: React.FC = () => {
   const handleAddToCart = (product: Product, quantity: number) => {
     dispatch(addToCart({ product, quantity }));
     showSuccess(`🛒 ${quantity}x ${product.title.substring(0, 30)}... added to cart!`);
-    // Reset quantity to 1 after adding to cart
     setQuantities(prev => ({
       ...prev,
       [product.id]: 1
@@ -145,6 +145,15 @@ export const ProductList: React.FC = () => {
 
   return (
     <div className="max-w-[1400px] mx-auto p-5 bg-[#f5f5f5] min-h-[calc(100vh-80px)] overflow-x-hidden max-md:p-[15px] max-[480px]:p-3">
+
+      {/* SEO */}
+      <Helmet>
+        <title>E-Shop | All Products</title>
+        <meta name="description" content="Browse our wide collection of products including clothing, electronics, jewellery and more at the best prices." />
+        <meta name="keywords" content="shop, buy online, clothing, electronics, jewellery, products" />
+        <link rel="canonical" href="https://shopping-site-ne7g.vercel.app/products" />
+      </Helmet>
+
       {/* Filters Section */}
       <div className="flex gap-4 mb-8 flex-wrap max-md:flex-col max-md:gap-3">
         <input

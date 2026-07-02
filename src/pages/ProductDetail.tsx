@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { api } from '../services/api';
 import { Product } from '../types/Mainview';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist, selectIsInWishlist } from '../store/slices/wishlistSlice';
-import { useToast } from '../hooks/useToast'; // Add this import
+import { useToast } from '../hooks/useToast';
 
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const { showSuccess } = useToast(); // Add this line
+  const { showSuccess } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,6 @@ export const ProductDetail: React.FC = () => {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart({ product, quantity }));
-      // Add toast notification
       showSuccess(`🛒 ${product.title.substring(0, 30)}... added to cart!`);
       navigate('/cart');
     }
@@ -68,6 +68,18 @@ export const ProductDetail: React.FC = () => {
 
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-10">
+
+      {/* SEO - Dynamic per product */}
+      <Helmet>
+        <title>E-Shop | {product.title}</title>
+        <meta name="description" content={`Buy ${product.title} for $${product.price.toFixed(2)}. Category: ${product.category}. Rated ${product.rating.rate}/5 by ${product.rating.count} customers.`} />
+        <meta name="keywords" content={`${product.title}, ${product.category}, buy online, e-shop`} />
+        <link rel="canonical" href={`https://shopping-site-ne7g.vercel.app/product/2`} />
+        <meta property="og:title" content={`E-Shop | ${product.title}`} />
+        <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
+        <meta property="og:image" content={product.image} />
+      </Helmet>
+
       <div className="grid grid-cols-2 gap-10">
         <div className="text-center">
           <img 
