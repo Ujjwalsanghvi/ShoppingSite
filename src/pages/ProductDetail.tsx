@@ -74,7 +74,7 @@ export const ProductDetail: React.FC = () => {
         <title>E-Shop | {product.title}</title>
         <meta name="description" content={`Buy ${product.title} for $${product.price.toFixed(2)}. Category: ${product.category}. Rated ${product.rating.rate}/5 by ${product.rating.count} customers.`} />
         <meta name="keywords" content={`${product.title}, ${product.category}, buy online, e-shop`} />
-        <link rel="canonical" href={`https://shopping-site-ne7g.vercel.app/product/2`} />
+        <link rel="canonical" href={`https://shopping-site-ne7g.vercel.app/product/${product.id}`} />
         <meta property="og:title" content={`E-Shop | ${product.title}`} />
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
