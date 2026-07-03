@@ -7,15 +7,15 @@ import {
   clearCart 
 } from '../store/slices/cartSlice';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { useToast } from '../hooks/useToast'; // Add this import
+import { useToast } from '../hooks/useToast';
 
 export const Checkout: React.FC = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector(selectCartItems);
   const total = useAppSelector(selectCartTotal);
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
-  const { showSuccess, showError, showWarning } = useToast(); // Add this line
+  const { showSuccess, showError, showWarning } = useToast();
   const [formData, setFormData] = useState({
     fullName: user?.name || '',
     address: '',
@@ -28,7 +28,6 @@ export const Checkout: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success' | 'failed'>('idle');
 
-  // Load saved address if exists
   useEffect(() => {
     const savedAddresses = localStorage.getItem(`addresses_${user?.id}`);
     if (savedAddresses) {
@@ -52,59 +51,46 @@ export const Checkout: React.FC = () => {
     });
   };
 
-  // Validate card number (must be valid mock card)
   const isValidCardNumber = (cardNumber: string): boolean => {
     const cleaned = cardNumber.replace(/\s/g, '');
-    
     const validMockCards = [
-      '4242424242424242', // Visa
-      '5555555555554444', // Mastercard
-      '378282246310005',  // Amex
-      '6011111111111117', // Discover
-      '4111111111111111', // Visa (test)
-      '4000000000000002', // Visa (test)
+      '4242424242424242',
+      '5555555555554444',
+      '378282246310005',
+      '6011111111111117',
+      '4111111111111111',
+      '4000000000000002',
     ];
-    
     return validMockCards.includes(cleaned) && cleaned.length >= 15 && cleaned.length <= 16;
   };
 
-  // Validate expiry date (must be future date)
   const isValidExpiry = (expiry: string): boolean => {
     const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
     if (!expiryRegex.test(expiry)) return false;
-    
     const [month, year] = expiry.split('/');
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear() % 100;
     const currentMonth = currentDate.getMonth() + 1;
-    
     const expYear = parseInt(year);
     const expMonth = parseInt(month);
-    
     if (expYear < currentYear) return false;
     if (expYear === currentYear && expMonth < currentMonth) return false;
-    
     return true;
   };
 
-  // Validate CVV
   const isValidCVV = (cvv: string): boolean => {
     return /^\d{3,4}$/.test(cvv);
   };
 
-  // Check if all fields are filled and valid
   const isFormValid = () => {
     const { fullName, address, city, zipCode, cardNumber, expiryDate, cvv } = formData;
-    
     if (!fullName.trim() || !address.trim() || !city.trim() || !zipCode.trim() || 
         !cardNumber.trim() || !expiryDate.trim() || !cvv.trim()) {
       return false;
     }
-    
     if (!isValidCardNumber(cardNumber)) return false;
     if (!isValidExpiry(expiryDate)) return false;
     if (!isValidCVV(cvv)) return false;
-    
     return true;
   };
 
@@ -135,7 +121,14 @@ export const Checkout: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // 🔒 Check if user is logged in before payment
+    if (!isAuthenticated) {
+      showWarning('⚠️ Please login or signup to place your order!');
+      navigate('/login');
+      return;
+    }
+
     if (!isFormValid()) {
       showWarning('⚠️ Please fill all fields correctly');
       return;
@@ -235,6 +228,35 @@ export const Checkout: React.FC = () => {
       <div className="mb-8">
         <h1 className="text-3xl text-gray-800 font-bold md:text-2xl md:mb-5">Checkout</h1>
       </div>
+
+      {/* Login Banner - shown only when not logged in */}
+      {!isAuthenticated && (
+        <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 mb-6 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔒</span>
+            <div>
+              <p className="text-sm font-semibold text-yellow-800">You are not logged in</p>
+              <p className="text-xs text-yellow-600">You can fill the form but you need to login to place your order</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              className="px-4 py-2 bg-blue-400 text-white text-sm font-medium rounded-lg border-none cursor-pointer hover:bg-blue-500"
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/signup')}
+              className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg border-none cursor-pointer hover:bg-green-600"
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex gap-8 flex-wrap md:flex-col md:gap-5">
         {/* Left Column - Shipping & Payment */}
@@ -370,7 +392,6 @@ export const Checkout: React.FC = () => {
                 </div>
               </div>
 
-              {/* Payment Status Indicator */}
               {paymentStatus === 'processing' && (
                 <div className="flex items-center justify-center p-4 bg-blue-50 rounded-lg">
                   <LoadingSpinner size="small" message="Processing payment..." />
@@ -421,17 +442,37 @@ export const Checkout: React.FC = () => {
               <span className="text-2xl font-bold text-blue-400">${total.toFixed(2)}</span>
             </div>
             
-            <button 
-              type="submit" 
-              disabled={!formValid || isProcessing}
-              className={`w-full py-3.5 rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 ${
-                !formValid || isProcessing
-                  ? 'bg-gray-300 cursor-not-allowed opacity-60' 
-                  : 'bg-green-500 text-white hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(76,175,80,0.3)]'
-              } md:py-3 md:text-sm`}
-            >
-              {isProcessing ? 'Processing...' : `Place Order ($${total.toFixed(2)})`}
-            </button>
+            {/* Place Order Button */}
+            {isAuthenticated ? (
+              <button
+                type="submit"
+                disabled={!formValid || isProcessing}
+                className={`w-full py-3.5 rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 ${
+                  !formValid || isProcessing
+                    ? 'bg-gray-300 cursor-not-allowed opacity-60'
+                    : 'bg-green-500 text-white hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(76,175,80,0.3)]'
+                } md:py-3 md:text-sm`}
+              >
+                {isProcessing ? 'Processing...' : `Place Order ($${total.toFixed(2)})`}
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="w-full py-3.5 rounded-lg text-base font-semibold bg-blue-400 text-white border-none cursor-pointer hover:bg-blue-500 transition-all duration-300 md:py-3 md:text-sm"
+                >
+                  🔒 Login to Place Order
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/signup')}
+                  className="w-full py-3.5 rounded-lg text-base font-semibold bg-green-500 text-white border-none cursor-pointer hover:bg-green-600 transition-all duration-300 md:py-3 md:text-sm"
+                >
+                  Create Account & Order
+                </button>
+              </div>
+            )}
 
             <p className="text-xs text-gray-400 text-center mt-3">
               🔒 Secure payment powered by mock credit card

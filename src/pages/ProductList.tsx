@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { api } from '../services/api';
 import { Product } from '../types/Mainview';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { addToCart } from '../store/slices/cartSlice';
+import { addToCart, selectCartItems } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist, selectWishlistItems } from '../store/slices/wishlistSlice';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { useToast } from '../hooks/useToast';
@@ -13,6 +13,7 @@ import { QuantitySelector } from '../components/QuantitySelector';
 export const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
   const wishlistItems = useAppSelector(selectWishlistItems);
+  const cartItems = useAppSelector(selectCartItems);
   const { showSuccess } = useToast();
   
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,6 +26,17 @@ export const ProductList: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
 
+  // ✅ Sync quantities with cart whenever cart changes
+  useEffect(() => {
+    setQuantities(prev => {
+      const updated = { ...prev };
+      cartItems.forEach(item => {
+        updated[item.product.id] = item.quantity;
+      });
+      return updated;
+    });
+  }, [cartItems]);
+
   const isInWishlist = (productId: number) => {
     return wishlistItems.some(item => item.id === productId);
   };
@@ -36,7 +48,9 @@ export const ProductList: React.FC = () => {
       setFilteredProducts(data);
       const initialQuantities: { [key: number]: number } = {};
       data.forEach(product => {
-        initialQuantities[product.id] = 1;
+        // ✅ Use cart quantity if item already in cart, else default to 1
+        const cartItem = cartItems.find(c => c.product.id === product.id);
+        initialQuantities[product.id] = cartItem ? cartItem.quantity : 1;
       });
       setQuantities(initialQuantities);
     } catch (error) {
@@ -44,7 +58,7 @@ export const ProductList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [cartItems]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -107,10 +121,6 @@ export const ProductList: React.FC = () => {
   const handleAddToCart = (product: Product, quantity: number) => {
     dispatch(addToCart({ product, quantity }));
     showSuccess(`🛒 ${quantity}x ${product.title.substring(0, 30)}... added to cart!`);
-    setQuantities(prev => ({
-      ...prev,
-      [product.id]: 1
-    }));
   };
 
   const handleQuantityChange = (productId: number, quantity: number) => {
@@ -484,7 +494,9 @@ export const ProductList: React.FC = () => {
 
               {/* Quantity Selector and Add to Cart */}
               <div className="m-[0_16px_16px_16px] flex gap-2 items-center">
+                {/* ✅ key prop forces QuantitySelector to re-render when quantity changes externally */}
                 <QuantitySelector
+                  key={`${product.id}-${quantity}`}
                   initialQuantity={quantity}
                   minQuantity={1}
                   maxQuantity={99}

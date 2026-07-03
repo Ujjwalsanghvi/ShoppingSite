@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { ToastProvider } from './components/ToastProvider'; // Add this import
+import { ToastProvider } from './components/ToastProvider';
 import { Navbar } from './components/Navbar';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { AdminRoute } from './components/AdminRoute'; // Add this import
+import { AdminRoute } from './components/AdminRoute';
 import { BackButton } from './components/BackButton';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -24,7 +24,7 @@ import { OrderManagement } from './pages/Admin/OrderManagement';
 function App() {
   return (
     <Provider store={store}>
-      <ToastProvider> {/* Wrap with ToastProvider */}
+      <ToastProvider>
         <Router>
           <Navbar />
           <Routes>
@@ -33,14 +33,13 @@ function App() {
             <Route path="/" element={<ProductList />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+
+            {/* Cart is now public - no login required */}
+            <Route path="/cart" element={<Cart />} />
+
             <Route path="/wishlist" element={
               <ProtectedRoute>
                 <Wishlist />
-              </ProtectedRoute>
-            } />
-            <Route path="/cart" element={
-              <ProtectedRoute>
-                <Cart />
               </ProtectedRoute>
             } />
             <Route path="/checkout" element={
@@ -53,9 +52,8 @@ function App() {
                 <Analytics />
               </ProtectedRoute>
             } />
-            {/* Order Management Route - Admin */}
             <Route path="/admin/orders" element={
-              <AdminRoute> {/* Changed from ProtectedRoute to AdminRoute */}
+              <AdminRoute>
                 <OrderManagement />
               </AdminRoute>
             } />
