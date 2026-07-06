@@ -79,33 +79,6 @@ export const ProductDetail: React.FC = () => {
         <meta property="og:image" content={product.image} />
       </Helmet>
 
-      {/* ✅ JSON-LD directly in body */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": product.title,
-            "image": product.image,
-            "description": product.description,
-            "category": product.category,
-            "offers": {
-              "@type": "Offer",
-              "price": product.price,
-              "priceCurrency": "USD",
-              "availability": "https://schema.org/InStock",
-              "url": `https://shopping-site-ne7g.vercel.app/product/${product.id}`
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": product.rating.rate,
-              "reviewCount": product.rating.count
-            }
-          })
-        }}
-      />
-
       <div className="grid grid-cols-2 gap-10">
         <div className="text-center">
           <img 

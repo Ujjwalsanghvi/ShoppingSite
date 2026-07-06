@@ -12,7 +12,7 @@
     <meta name="author" content="E-Shop" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Open Graph (WhatsApp, Facebook, LinkedIn previews) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://shopping-site-ne7g.vercel.app/" />
     <meta property="og:title" content="E-Shop | Best Products Online" />
@@ -28,6 +28,35 @@
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- ✅ WebSite JSON-LD - Static, always in HTML -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "E-Shop",
+      "url": "https://shopping-site-ne7g.vercel.app",
+      "description": "Buy the best products online at great prices.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://shopping-site-ne7g.vercel.app/products?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- ✅ Organization JSON-LD - Static, always in HTML -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "E-Shop",
+      "url": "https://shopping-site-ne7g.vercel.app",
+      "logo": "https://shopping-site-ne7g.vercel.app/og-image.png",
+      "description": "Buy the best products online at great prices.",
+      "sameAs": []
+    }
+    </script>
 
     <title>E-Shop</title>
   </head>
