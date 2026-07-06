@@ -9,6 +9,8 @@ import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist, selectIsInWishlist } from '../store/slices/wishlistSlice';
 import { useToast } from '../hooks/useToast';
 
+const SITE_URL = 'https://shopping-site-ne7g.vercel.app';
+
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
@@ -18,7 +20,7 @@ export const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const isInWishlist = useAppSelector(state => 
+  const isInWishlist = useAppSelector(state =>
     product ? selectIsInWishlist(product.id)(state) : false
   );
 
@@ -65,29 +67,121 @@ export const ProductDetail: React.FC = () => {
     return <div className="text-center text-2xl text-red-500 mt-12">Product not found</div>;
   }
 
+  // ---- Structured Data ----
+  const productUrl = `${SITE_URL}/product/${product.id}`;
+
+  const productJsonLd = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.title,
+    image: [product.image],
+    description: product.description,
+    sku: `SKU-${product.id}`,
+    mpn: `MPN-${product.id}`,
+    brand: {
+      '@type': 'Brand',
+      name: 'E-Shop',
+    },
+    category: product.category,
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      priceCurrency: 'USD',
+      price: product.price.toFixed(2),
+      priceValidUntil: '2026-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: 'https://schema.org/InStock',
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'US',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 30,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '0',
+          currency: 'USD',
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'US',
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 0,
+            maxValue: 1,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 2,
+            maxValue: 5,
+            unitCode: 'DAY',
+          },
+        },
+      },
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: product.rating.rate,
+      reviewCount: product.rating.count,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Products', item: `${SITE_URL}/products` },
+      { '@type': 'ListItem', position: 3, name: product.title, item: productUrl },
+    ],
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-10">
 
-      {/* SEO */}
+      {/* SEO + Structured Data */}
       <Helmet>
         <title>E-Shop | {product.title}</title>
-        <meta name="description" content={`Buy ${product.title} for $${product.price.toFixed(2)}. Category: ${product.category}. Rated ${product.rating.rate}/5 by ${product.rating.count} customers.`} />
+        <meta
+          name="description"
+          content={`Buy ${product.title} for $${product.price.toFixed(2)}. Category: ${product.category}. Rated ${product.rating.rate}/5 by ${product.rating.count} customers.`}
+        />
         <meta name="keywords" content={`${product.title}, ${product.category}, buy online, e-shop`} />
-        <link rel="canonical" href={`https://shopping-site-ne7g.vercel.app/product/${product.id}`} />
+        <link rel="canonical" href={productUrl} />
         <meta property="og:title" content={`E-Shop | ${product.title}`} />
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
+
+        {/* ✅ Product JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(productJsonLd)}
+        </script>
+
+        {/* ✅ Breadcrumb JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbJsonLd)}
+        </script>
       </Helmet>
 
       <div className="grid grid-cols-2 gap-10">
         <div className="text-center">
-          <img 
-            src={product.image} 
-            alt={product.title} 
-            className="max-w-full h-[400px] object-contain" 
+          <img
+            src={product.image}
+            alt={product.title}
+            className="max-w-full h-[400px] object-contain"
           />
         </div>
-        
+
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <h1 className="text-[28px] text-gray-800">{product.title}</h1>
@@ -105,7 +199,7 @@ export const ProductDetail: React.FC = () => {
           </div>
           <p className="text-base leading-relaxed text-gray-500">{product.description}</p>
           <div className="text-3xl font-bold text-blue-400">${product.price.toFixed(2)}</div>
-          
+
           <div className="flex items-center gap-2.5">
             <label className="text-base font-bold">Quantity:</label>
             <input
@@ -116,9 +210,9 @@ export const ProductDetail: React.FC = () => {
               className="w-[60px] p-2 text-base border border-gray-300 rounded-md focus:outline-none focus:border-blue-400"
             />
           </div>
-          
-          <button 
-            onClick={handleAddToCart} 
+
+          <button
+            onClick={handleAddToCart}
             className="bg-blue-400 text-white border-none py-3.5 text-lg rounded-md cursor-pointer mt-5 transition-colors duration-300 hover:bg-blue-500"
           >
             Add to Cart
