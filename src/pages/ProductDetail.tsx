@@ -18,7 +18,6 @@ export const ProductDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ CORRECT - Hook at top level
   const isInWishlist = useAppSelector(state => 
     product ? selectIsInWishlist(product.id)(state) : false
   );
@@ -66,6 +65,28 @@ export const ProductDetail: React.FC = () => {
     return <div className="text-center text-2xl text-red-500 mt-12">Product not found</div>;
   }
 
+  // ✅ JSON-LD structured data object
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.image,
+    "description": product.description,
+    "category": product.category,
+    "offers": {
+      "@type": "Offer",
+      "price": product.price,
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "url": `https://shopping-site-ne7g.vercel.app/product/${product.id}`
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": product.rating.rate,
+      "reviewCount": product.rating.count
+    }
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-10">
 
@@ -78,6 +99,10 @@ export const ProductDetail: React.FC = () => {
         <meta property="og:title" content={`E-Shop | ${product.title}`} />
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
+        {/* ✅ JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
       </Helmet>
 
       <div className="grid grid-cols-2 gap-10">
