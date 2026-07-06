@@ -39,41 +39,6 @@ export const ProductDetail: React.FC = () => {
     }
   }, [id, fetchProduct]);
 
-  // ✅ Inject JSON-LD directly into <head> using useEffect
-  useEffect(() => {
-    if (!product) return;
-
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": product.title,
-      "image": product.image,
-      "description": product.description,
-      "category": product.category,
-      "offers": {
-        "@type": "Offer",
-        "price": product.price,
-        "priceCurrency": "USD",
-        "availability": "https://schema.org/InStock",
-        "url": `https://shopping-site-ne7g.vercel.app/product/${product.id}`
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": product.rating.rate,
-        "reviewCount": product.rating.count
-      }
-    });
-
-    document.head.appendChild(script);
-
-    // Cleanup when component unmounts or product changes
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, [product]);
-
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart({ product, quantity }));
@@ -113,6 +78,33 @@ export const ProductDetail: React.FC = () => {
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
       </Helmet>
+
+      {/* ✅ JSON-LD directly in body */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "image": product.image,
+            "description": product.description,
+            "category": product.category,
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "url": `https://shopping-site-ne7g.vercel.app/product/${product.id}`
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating.rate,
+              "reviewCount": product.rating.count
+            }
+          })
+        }}
+      />
 
       <div className="grid grid-cols-2 gap-10">
         <div className="text-center">
