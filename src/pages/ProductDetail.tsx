@@ -14,24 +14,27 @@ export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { showSuccess } = useToast();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // ✅ Use static data as initial state - renders immediately
+  const staticProduct = staticProducts.find(p => p.id === Number(id));
+  const [product, setProduct] = useState<Product | null>(
+    staticProduct ? staticProduct as Product : null
+  );
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(!staticProduct); // only show loading if no static data
 
   const isInWishlist = useAppSelector(state => 
     product ? selectIsInWishlist(product.id)(state) : false
   );
 
-  // ✅ Get static product data immediately for JSON-LD
-  const staticProduct = staticProducts.find(p => p.id === Number(id));
-
   const fetchProduct = useCallback(async () => {
     try {
       const data = await api.getProduct(Number(id));
-      setProduct(data);
+      setProduct(data); // update with fresh API data
     } catch (error) {
       console.error('Error fetching product:', error);
+      // Keep static data if API fails - already set as initial state
     } finally {
       setLoading(false);
     }
@@ -42,14 +45,6 @@ export const ProductDetail: React.FC = () => {
       fetchProduct();
     }
   }, [id, fetchProduct]);
-
-  if (loading) {
-    return <LoadingSpinner size="large" message="Loading product details..." />;
-  }
-
-  if (!product) {
-    return <div className="text-center text-2xl text-red-500 mt-12">Product not found</div>;
-  }
 
   const handleAddToCart = () => {
     if (product) {
@@ -69,6 +64,14 @@ export const ProductDetail: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return <LoadingSpinner size="large" message="Loading product details..." />;
+  }
+
+  if (!product) {
+    return <div className="text-center text-2xl text-red-500 mt-12">Product not found</div>;
+  }
+
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-10">
 
@@ -80,32 +83,29 @@ export const ProductDetail: React.FC = () => {
         <meta property="og:title" content={`E-Shop | ${product.title}`} />
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
-
-        {/* ✅ JSON-LD using static data - available immediately without API */}
-        {staticProduct && (
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Product",
-              "name": staticProduct.title,
-              "image": staticProduct.image,
-              "description": staticProduct.description,
-              "category": staticProduct.category,
-              "offers": {
-                "@type": "Offer",
-                "price": staticProduct.price,
-                "priceCurrency": "USD",
-                "availability": "https://schema.org/InStock",
-                "url": `https://shopping-site-ne7g.vercel.app/product/${staticProduct.id}`
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": staticProduct.rating.rate,
-                "reviewCount": staticProduct.rating.count
-              }
-            })}
-          </script>
-        )}
+        {/* ✅ JSON-LD always available from static data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "image": product.image,
+            "description": product.description,
+            "category": product.category,
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "url": `https://shopping-site-ne7g.vercel.app/product/${product.id}`
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating.rate,
+              "reviewCount": product.rating.count
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="grid grid-cols-2 gap-10">
