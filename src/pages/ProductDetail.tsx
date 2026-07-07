@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist, removeFromWishlist, selectIsInWishlist } from '../store/slices/wishlistSlice';
 import { useToast } from '../hooks/useToast';
-import { staticProducts } from '../data/staticProducts';
 
 export const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,25 +15,26 @@ export const ProductDetail: React.FC = () => {
   const { showSuccess } = useToast();
   const navigate = useNavigate();
 
-  // ✅ Use static data as initial state - renders immediately
-  const staticProduct = staticProducts.find(p => p.id === Number(id));
-  const [product, setProduct] = useState<Product | null>(
-    staticProduct ? staticProduct as Product : null
-  );
+  // ✅ Always start empty and rely on the real API response
+  const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(!staticProduct); // only show loading if no static data
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const isInWishlist = useAppSelector(state => 
+  const isInWishlist = useAppSelector(state =>
     product ? selectIsInWishlist(product.id)(state) : false
   );
 
   const fetchProduct = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
       const data = await api.getProduct(Number(id));
-      setProduct(data); // update with fresh API data
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      // Keep static data if API fails - already set as initial state
+      setProduct(data); // always the real API data
+    } catch (err) {
+      console.error('Error fetching product:', err);
+      setProduct(null);
+      setError('Could not load this product right now.');
     } finally {
       setLoading(false);
     }
@@ -68,6 +68,10 @@ export const ProductDetail: React.FC = () => {
     return <LoadingSpinner size="large" message="Loading product details..." />;
   }
 
+  if (error) {
+    return <div className="text-center text-2xl text-red-500 mt-12">{error}</div>;
+  }
+
   if (!product) {
     return <div className="text-center text-2xl text-red-500 mt-12">Product not found</div>;
   }
@@ -83,7 +87,7 @@ export const ProductDetail: React.FC = () => {
         <meta property="og:title" content={`E-Shop | ${product.title}`} />
         <meta property="og:description" content={`Buy ${product.title} for $${product.price.toFixed(2)}`} />
         <meta property="og:image" content={product.image} />
-        {/* ✅ JSON-LD always available from static data */}
+        {/* ✅ JSON-LD built only from live API data */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
