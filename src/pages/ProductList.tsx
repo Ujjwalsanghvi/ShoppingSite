@@ -340,7 +340,7 @@ export const ProductList: React.FC = () => {
           max-[560px]:gap-4
         "
       >
-        {filteredProducts.map((product) => {
+        {filteredProducts.map((product, index) => {
           const isProductInWishlist = isInWishlist(product.id);
           const quantity = quantities[product.id] || 1;
           return (
@@ -414,6 +414,8 @@ export const ProductList: React.FC = () => {
                   <img
                     src={product.image}
                     alt={product.title}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
                     className="
                       w-full
                       h-[200px]
