@@ -32,43 +32,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "react-snap",
+    
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "reactSnap": {
-    "include": [
-      "/",
-      "/products",
-      "/product/1",
-      "/product/2",
-      "/product/3",
-      "/product/4",
-      "/product/5",
-      "/product/6",
-      "/product/7",
-      "/product/8",
-      "/product/9",
-      "/product/10",
-      "/product/11",
-      "/product/12",
-      "/product/13",
-      "/product/14",
-      "/product/15",
-      "/product/16",
-      "/product/17",
-      "/product/18",
-      "/product/19",
-      "/product/20",
-      "/login",
-      "/signup",
-      "/cart"
-    ],
-    "skipThirdPartyRequests": false,
-    "puppeteerArgs": [
-      "--no-sandbox",
-      "--disable-setuid-sandbox"
-    ]
   },
   "eslintConfig": {
     "extends": [
@@ -91,6 +57,7 @@
   "devDependencies": {
     "autoprefixer": "^10.5.2",
     "postcss": "^8.5.16",
+    "react-snap": "^1.23.0",
     "tailwindcss": "^3.4.19"
   }
 }
