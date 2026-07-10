@@ -1,26 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
+import { Order } from '../../types/Order';
 
-interface Order {
-  id: string;
-  date: string;
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  items: Array<{
-    id: number;
-    title: string;
-    price: number;
-    quantity: number;
-    image: string;
-  }>;
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-}
+
 
 export const Orders: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);

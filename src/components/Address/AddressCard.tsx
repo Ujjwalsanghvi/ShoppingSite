@@ -1,12 +1,7 @@
 import React from 'react';
-import { IAddress } from '../../types/Address';
+import { AddressCardProps } from '../../types/AddressCardProps';
 
-interface AddressCardProps {
-  address: IAddress;
-  onEdit: (address: IAddress) => void;
-  onDelete: (id: number) => void;
-  onSetDefault: (id: number) => void;
-}
+
 
 export const AddressCard: React.FC<AddressCardProps> = ({
   address,

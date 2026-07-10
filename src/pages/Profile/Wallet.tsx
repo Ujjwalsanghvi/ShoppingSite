@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAppSelector } from '../../store/hooks';
+import { Transaction } from '../../types/Transaction';
 
-interface Transaction {
-  id: string;
-  date: string;
-  type: 'credit' | 'debit';
-  amount: number;
-  description: string;
-  status: 'completed' | 'pending' | 'failed';
-}
 
 export const Wallet: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
