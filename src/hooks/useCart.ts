@@ -34,7 +34,7 @@ export const useCart = () => {
     setTimeout(() => setLoading(false), 300);
   }, [dispatch]);
 
-  // Helper function to get item total with proper formatting
+  
   const getItemTotal = useCallback((productId: number) => {
     const item = cart.find(i => i.product.id === productId);
     if (!item) return 0;

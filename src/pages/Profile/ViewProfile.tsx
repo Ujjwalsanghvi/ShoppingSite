@@ -18,14 +18,14 @@ export const ViewProfile: React.FC = () => {
   const loading = useAppSelector(selectProfileLoading);
   
   
-  // Load all profile data when component mounts
+  
   useEffect(() => {
     dispatch(loadOrders());
     dispatch(loadAddresses());
     dispatch(loadWalletData());
   }, [dispatch]);
 
-  // Show loading state
+  
   if (loading) {
   return <LoadingSpinner size="large" message="Loading your profile..." />;
 }

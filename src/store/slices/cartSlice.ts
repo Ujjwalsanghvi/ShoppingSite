@@ -2,22 +2,16 @@ import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { CartItem, Product } from '../../types/Mainview';
 import { RootState } from '../index';
 
-
-
-// Load cart from localStorage
 const loadCartFromStorage = (): CartItem[] => {
   const savedCart = localStorage.getItem('cart');
   return savedCart ? JSON.parse(savedCart) : [];
 };
 
-// Save cart to localStorage
+
 const saveCartToStorage = (items: CartItem[]) => {
   localStorage.setItem('cart', JSON.stringify(items));
 };
 
-// Helper function to calculate total with proper decimal precision
-
-// Helper function to calculate count
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -62,11 +56,11 @@ const cartSlice = createSlice({
   },
 });
 
-// Export actions
+
 export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
 
-// Selectors with proper calculations
+
 export const selectCartItems = (state: RootState) => state.cart.items;
 
 export const selectCartTotal = createSelector(
@@ -75,7 +69,7 @@ export const selectCartTotal = createSelector(
     const total = items.reduce((sum, item) => {
       return sum + (item.product.price * item.quantity);
     }, 0);
-    return Math.round(total * 100) / 100; // Round to 2 decimal places
+    return Math.round(total * 100) / 100; 
   }
 );
 

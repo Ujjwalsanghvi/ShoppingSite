@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
   
-  // Show loading state while checking authentication
+  
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[calc(100vh-80px)]">

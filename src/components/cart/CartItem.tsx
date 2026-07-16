@@ -5,11 +5,10 @@ import { CartItem as CartItemType } from '../../types/CartItem';
 interface CartItemProps {
   item: CartItemType;
   onUpdateQuantity: (productId: number, quantity: number) => void;
-  onRemove: (productId: number, productTitle: string) => void; // Updated to include title
+  onRemove: (productId: number, productTitle: string) => void;
 }
 
 export const CartItem: React.FC<CartItemProps> = ({ item, onUpdateQuantity, onRemove }) => {
-  // Calculate item total with proper precision
   const itemTotal = Math.round((item.product.price * item.quantity) * 100) / 100;
 
   return (
@@ -140,7 +139,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item, onUpdateQuantity, onRe
       </div>
 
       <button
-        onClick={() => onRemove(item.product.id, item.product.title)} // Passing product title
+        onClick={() => onRemove(item.product.id, item.product.title)} 
         className="
           px-4
           py-2

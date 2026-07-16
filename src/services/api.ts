@@ -3,16 +3,15 @@ import { Product } from '../types/Mainview';
 
 const API_BASE_URL = 'https://fakestoreapi.com';
 
-// User interface for stored users
 interface StoredUser {
   id: number;
   email: string;
   name: string;
-  password: string; // In a real app, this would be hashed
+  password: string; 
 }
 
 export const api = {
-  // Products
+  
   getProducts: async (): Promise<Product[]> => {
     const response = await axios.get(`${API_BASE_URL}/products`);
     return response.data;
@@ -33,15 +32,15 @@ export const api = {
     return response.data;
   },
   
-  // Mock authentication with proper password storage
+  
   mockAuth: {
-    // Initialize users from localStorage or create default
+    
     getUsers: (): StoredUser[] => {
       const users = localStorage.getItem('registeredUsers');
       if (users) {
         return JSON.parse(users);
       }
-      // Create a default test user
+      
       const defaultUsers = [
         {
           id: 1,
@@ -78,17 +77,17 @@ export const api = {
       
       const users = api.mockAuth.getUsers();
       
-      // Check if user already exists
+      
       if (users.find(u => u.email === email)) {
         throw new Error('User already exists with this email');
       }
       
-      // Create new user
+      
       const newUser = {
         id: Date.now(),
         email,
         name,
-        password // Store password (in real app, hash this)
+        password
       };
       
       users.push(newUser);
@@ -107,7 +106,7 @@ export const api = {
       const user = users.find(u => u.email === email);
       
       if (user) {
-        // In a real app, send reset email
+        
         console.log(`Password reset link sent to ${email}`);
         return;
       }

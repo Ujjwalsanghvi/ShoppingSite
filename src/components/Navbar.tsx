@@ -9,7 +9,7 @@ import { selectWishlistCount } from '../store/slices/wishlistSlice';
 export const Navbar: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation(); // ADD THIS for route detection
+  const location = useLocation(); 
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const cartCount = useAppSelector(selectCartCount);
   const cartItems = useAppSelector(selectCartItems);
@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   const cartRef = useRef<HTMLDivElement>(null);
   const cartButtonRef = useRef<HTMLButtonElement>(null);
 
-  // CLOSE CART WHEN ROUTE CHANGES
+  
   useEffect(() => {
     setIsCartOpen(false);
   }, [location.pathname]);
@@ -52,19 +52,19 @@ export const Navbar: React.FC = () => {
     setIsProfileOpen(false);
   };
 
-  // Close cart function - only called by X button
+  
   const closeCart = () => {
     setIsCartOpen(false);
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Profile dropdown
+      
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
       
-      // Mobile menu
+    
       if (
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target as Node) &&
@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
         setIsMobileMenuOpen(false);
       }
       
-      // DO NOT close cart when clicking outside - removed cart close logic
+      
     };
     
     document.addEventListener('mousedown', handleClickOutside);
@@ -86,7 +86,7 @@ export const Navbar: React.FC = () => {
   const profilePicture = profileData?.profilePicture;
   const userName = profileData?.fullName || user?.name || 'User';
 
-  // Cart Popup - Only closes when X button is clicked or route changes
+  
   const CartPopup = (
     <div 
       ref={cartRef} 
@@ -98,7 +98,7 @@ export const Navbar: React.FC = () => {
           Shopping Cart ({cartCount})
         </h3>
         <button
-          onClick={closeCart} // Only closes when X is clicked
+          onClick={closeCart} 
           className="bg-none border-none text-gray-400 cursor-pointer text-lg hover:text-gray-600 transition-colors"
         >
           ✕

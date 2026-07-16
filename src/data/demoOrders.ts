@@ -1,6 +1,6 @@
 import { Order } from "../types/Order";
 
-export const demoOrders: Order[] = [ // Changed ImpOrder[] to Order[]
+export const demoOrders: Order[] = [ 
         {
           id: 'ORD-001',
           date: '2024-05-10',
@@ -15,7 +15,7 @@ export const demoOrders: Order[] = [ // Changed ImpOrder[] to Order[]
               image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
             },
           ],
-          shippingAddress: { // Add shippingAddress property to match Order interface
+          shippingAddress: {
             street: '123 Main Street',
             city: 'New York',
             state: 'NY',
@@ -36,7 +36,7 @@ export const demoOrders: Order[] = [ // Changed ImpOrder[] to Order[]
               image: 'https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg',
             },
           ],
-          shippingAddress: { // Add shippingAddress property to match Order interface
+          shippingAddress: { 
             street: '123 Main Street',
             city: 'New York',
             state: 'NY',

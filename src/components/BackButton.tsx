@@ -5,7 +5,6 @@ export const BackButton: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Don't show back button on home page and products page
   if (location.pathname === '/' || location.pathname === '/products') {
     return null;
   }
@@ -21,7 +20,6 @@ export const BackButton: React.FC = () => {
   );
 };
 
-// Add styles to document
 const styleSheet = document.createElement("style");
 styleSheet.textContent = `
   .floating-back-btn {

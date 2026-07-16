@@ -122,7 +122,7 @@ export const Checkout: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔒 Check if user is logged in before payment
+    
     if (!isAuthenticated) {
       showWarning('⚠️ Please login or signup to place your order!');
       navigate('/login');

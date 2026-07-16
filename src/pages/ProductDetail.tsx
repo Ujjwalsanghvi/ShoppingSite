@@ -15,7 +15,7 @@ export const ProductDetail: React.FC = () => {
   const { showSuccess } = useToast();
   const navigate = useNavigate();
 
-  // ✅ Always start empty and rely on the real API response
+
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -30,7 +30,7 @@ export const ProductDetail: React.FC = () => {
     setError(null);
     try {
       const data = await api.getProduct(Number(id));
-      setProduct(data); // always the real API data
+      setProduct(data); 
     } catch (err) {
       console.error('Error fetching product:', err);
       setProduct(null);

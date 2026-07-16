@@ -6,7 +6,7 @@ interface WishlistState {
   items: Product[];
 }
 
-// Get user from localStorage
+
 const getUser = () => {
   const userStr = localStorage.getItem('user');
   if (userStr) {
@@ -21,7 +21,7 @@ const getUser = () => {
 
 const user = getUser();
 
-// Load wishlist from localStorage
+
 const loadWishlistFromStorage = (): Product[] => {
   if (user?.id) {
     const savedWishlist = localStorage.getItem(`wishlist_${user?.id}`);
@@ -34,7 +34,7 @@ const initialState: WishlistState = {
   items: loadWishlistFromStorage(),
 };
 
-// Save wishlist to localStorage
+
 const saveWishlistToStorage = (items: Product[]) => {
   const currentUser = getUser();
   if (currentUser?.id) {
@@ -72,7 +72,7 @@ const wishlistSlice = createSlice({
 export const { addToWishlist, removeFromWishlist, clearWishlist, loadWishlist } = wishlistSlice.actions;
 export default wishlistSlice.reducer;
 
-// Selectors
+
 export const selectWishlistItems = (state: RootState) => state.wishlist?.items || [];
 
 export const selectWishlistCount = createSelector(

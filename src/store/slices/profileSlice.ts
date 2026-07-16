@@ -17,7 +17,7 @@ interface ProfileState {
   error: string | null;
 }
 
-// Get user from localStorage - no external imports
+
 const getUser = () => {
   const userStr = localStorage.getItem('user');
   if (userStr) {
@@ -62,7 +62,7 @@ const initialState: ProfileState = {
   error: null,
 };
 
-// Async thunks for loading data
+
 export const loadProfileData = createAsyncThunk(
   'profile/loadProfileData',
   async (_, { getState }) => {
@@ -210,7 +210,7 @@ export const {
 
 export default profileSlice.reducer;
 
-// Selectors
+
 export const selectProfileData = (state: RootState) => state.profile?.profileData || initialState.profileData;
 export const selectEditData = (state: RootState) => state.profile?.editData || initialState.editData;
 export const selectIsEditModalOpen = (state: RootState) => state.profile?.isEditModalOpen || false;

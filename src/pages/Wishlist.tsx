@@ -7,17 +7,17 @@ import {
   removeFromWishlist, 
   clearWishlist 
 } from '../store/slices/wishlistSlice';
-import { useToast } from '../hooks/useToast'; // Add this import
+import { useToast } from '../hooks/useToast'; 
 
 export const Wishlist: React.FC = () => {
   const dispatch = useAppDispatch();
   const wishlist = useAppSelector(selectWishlistItems);
-  const { showSuccess, showWarning } = useToast(); // Add this line
+  const { showSuccess, showWarning } = useToast(); 
 
   const handleMoveToCart = (product: any) => {
     dispatch(addToCart({ product, quantity: 1 }));
     dispatch(removeFromWishlist(product.id));
-    // Add toast notification
+    
     showSuccess(`🛒 ${product.title.substring(0, 30)}... moved to cart!`);
   };
 

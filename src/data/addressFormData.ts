@@ -1,6 +1,6 @@
 import { IAddress } from '../types/Address';
 
-// Get initial empty form data
+
 export const getInitialAddressForm = (address?: IAddress) => ({
   fullName: address?.fullName ?? '',
   street: address?.street ?? '',
@@ -11,7 +11,7 @@ export const getInitialAddressForm = (address?: IAddress) => ({
   phone: address?.phone ?? ''
 });
 
-// Get form data from address (for editing)
+
 export const getAddressFormFromAddress = (address: IAddress) => ({
   fullName: address.fullName,
   street: address.street,
@@ -22,7 +22,7 @@ export const getAddressFormFromAddress = (address: IAddress) => ({
   phone: address.phone
 });
 
-// Get form data with name only (for adding new address)
+
 export const getAddressFormWithName = (name: string) => ({
   fullName: name,
   street: '',

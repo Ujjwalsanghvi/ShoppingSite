@@ -17,7 +17,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Async thunks for authentication
+
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }) => {
@@ -68,7 +68,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Login
+      
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -86,7 +86,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       
-      // Signup
+      
       .addCase(signup.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -104,7 +104,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       
-      // Logout
+      
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
@@ -112,7 +112,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       
-      // Reset Password
+      
       .addCase(resetPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -126,7 +126,7 @@ const authSlice = createSlice({
         state.error = action.error.message || 'Password reset failed';
       })
       
-      // Check Auth
+      
       .addCase(checkAuth.fulfilled, (state, action: PayloadAction<User | null>) => {
         state.user = action.payload;
         state.isAuthenticated = !!action.payload;
@@ -137,8 +137,6 @@ const authSlice = createSlice({
 
 export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
-
-// Selectors
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
 export const selectAuthLoading = (state: RootState) => state.auth.loading;

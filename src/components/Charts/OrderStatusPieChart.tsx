@@ -9,7 +9,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export const OrderStatusPieChart: React.FC = () => {
   const orders = useAppSelector(selectOrders);
 
-  // Count orders by status
   const getOrderStatusCounts = () => {
     const statuses = ['delivered', 'shipped', 'processing', 'pending', 'cancelled'];
     const counts = statuses.map(status => {
@@ -25,11 +24,11 @@ export const OrderStatusPieChart: React.FC = () => {
         label: 'Order Status',
         data: getOrderStatusCounts(),
         backgroundColor: [
-          'rgba(76, 175, 80, 0.8)',   // Delivered - Green
-          'rgba(33, 150, 243, 0.8)',   // Shipped - Blue
-          'rgba(255, 152, 0, 0.8)',    // Processing - Orange
-          'rgba(255, 193, 7, 0.8)',    // Pending - Yellow
-          'rgba(244, 67, 54, 0.8)',    // Cancelled - Red
+          'rgba(76, 175, 80, 0.8)',   
+          'rgba(33, 150, 243, 0.8)',   
+          'rgba(255, 152, 0, 0.8)',    
+          'rgba(255, 193, 7, 0.8)',    
+          'rgba(244, 67, 54, 0.8)',    
         ],
         borderColor: [
           'rgba(76, 175, 80, 1)',

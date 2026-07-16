@@ -16,7 +16,7 @@ export const QuantitySelector: React.FC<QuantitySelectorProps> = ({
 
   const [quantity, setQuantity] = useState(initialQuantity);
 
-  // Sync with parent whenever initialQuantity changes
+  
   useEffect(() => {
     setQuantity(initialQuantity);
   }, [initialQuantity]);

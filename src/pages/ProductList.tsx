@@ -26,7 +26,7 @@ export const ProductList: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
 
-  // ✅ Sync quantities with cart whenever cart changes
+  
   useEffect(() => {
     setQuantities(prev => {
       const updated = { ...prev };
@@ -48,7 +48,7 @@ export const ProductList: React.FC = () => {
       setFilteredProducts(data);
       const initialQuantities: { [key: number]: number } = {};
       data.forEach(product => {
-        // ✅ Use cart quantity if item already in cart, else default to 1
+        
         const cartItem = cartItems.find(c => c.product.id === product.id);
         initialQuantities[product.id] = cartItem ? cartItem.quantity : 1;
       });

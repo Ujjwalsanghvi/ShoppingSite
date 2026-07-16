@@ -24,7 +24,6 @@ ChartJS.register(
 export const SpendingBarChart: React.FC = () => {
   const orders = useAppSelector(selectOrders);
 
-  // Get last 6 months
   const getLast6Months = () => {
     const months = [];
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -36,7 +35,6 @@ export const SpendingBarChart: React.FC = () => {
     return months;
   };
 
-  // Get spending per month
   const getSpendingPerMonth = () => {
     const months = getLast6Months();
     const spending = months.map((month, index) => {

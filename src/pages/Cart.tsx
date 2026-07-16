@@ -5,7 +5,7 @@ import { CartItemsList } from '../components/cart/CartItemsList';
 import { OrderSummary } from '../components/cart/OrderSummary';
 import { useCart } from '../hooks/useCart';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { useToast } from '../hooks/useToast'; // Add this import
+import { useToast } from '../hooks/useToast'; 
 
 export const Cart: React.FC = () => {
   const { 
@@ -16,9 +16,9 @@ export const Cart: React.FC = () => {
     handleRemoveFromCart, 
     handleClearCart 
   } = useCart();
-  const { showSuccess, showWarning } = useToast(); // Add this line
+  const { showSuccess, showWarning } = useToast(); 
 
-  // Wrapper functions with toast notifications
+  
   const handleRemoveItem = (productId: number, productTitle: string) => {
     handleRemoveFromCart(productId);
     showWarning(`🗑️ ${productTitle.substring(0, 30)}... removed from cart`);
@@ -47,12 +47,12 @@ export const Cart: React.FC = () => {
             <CartItemsList
               items={cart}
               onUpdateQuantity={handleUpdateQuantity}
-              onRemove={handleRemoveItem} // Updated to use wrapper function
+              onRemove={handleRemoveItem} 
             />
           </div>
 
           <div className="flex-1 w-full">
-            <OrderSummary total={total} onClearCart={handleClearAll} // Updated to use wrapper function
+            <OrderSummary total={total} onClearCart={handleClearAll} 
             />
           </div>
         </div>

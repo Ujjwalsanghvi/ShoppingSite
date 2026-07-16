@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';  // Fixed path
-import { login, resetPassword, clearError } from '../store/slices/authSlice';  // Fixed path
+import { useAppDispatch, useAppSelector } from '../store/hooks'; 
+import { login, resetPassword, clearError } from '../store/slices/authSlice';  
 
 export const Login: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -5,7 +5,7 @@ import { CartItem as CartItemType } from '../../types/CartItem';
 interface CartItemsListProps {
   items: CartItemType[];
   onUpdateQuantity: (productId: number, quantity: number) => void;
-  onRemove: (productId: number, productTitle: string) => void; // Updated
+  onRemove: (productId: number, productTitle: string) => void; 
 }
 
 export const CartItemsList: React.FC<CartItemsListProps> = ({ 
